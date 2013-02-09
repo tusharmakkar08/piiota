@@ -1,6 +1,8 @@
 import os,csv,webbrowser,urllib,urllib2
 from bs4 import BeautifulSoup
 import cPickle as pickle
+def tts(text):
+      return os.system("espeak  -s 155 -a 200 "+text+" " )
 while(1):
     print "Welcome to PIIOTA Answering machine"
     print "1 . Talk to PIIOTA "
@@ -27,6 +29,8 @@ while(1):
                    foi=pickle.load(open(l,"rb")) # loading file using pickel
                    if b in foi.keys():
                        print foi[b]
+                       k=foi[b].replace(" ","\ ")
+                       tts(k)
                    else:
                        f=open(l,'w+')
                        print "Sorry .. Want to contribute by telling the appropriate answer"
