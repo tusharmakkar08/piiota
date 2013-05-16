@@ -2,22 +2,34 @@ import os,csv,webbrowser,urllib,urllib2,re
 from lxml import etree
 from bs4 import BeautifulSoup
 import cPickle as pickle
+"""
+Added for taking the anser in summarized form from Wikipedia .
+"""
 class WikipediaError(Exception):
     pass
-class GrabArticle(object):    
+class GrabArticle(object):
+    """
+    Grabbing an article from wikipedia
+    """
+
     def __init__(self):
         self.url_random = "http://en.wikipedia.org/w/api.php?action=query&prop=revisions&grnnamespace=0&rvsection=0&generator=random&rvprop=content&format=xml"
+
     def __fetch(self, url):
         request = urllib2.Request(url)
         request.add_header("User-Agent", "Mozilla/5.0")
         try:
-            result = urllib2.urlopen(request)
+            result = urllib2.urlopen(request)   
         except urllib2.HTTPError, e:
             raise WikipediaError(e.code)
         except urllib2.URLError, e:
             raise WikipediaError(e.reason)
         return result
+    
     def findArticle(self, article=None):
+        """
+        Finding a given article
+        """
         if article is not None:
             title=re.sub(r"\s" ,r"%20", article)
             url = "http://en.wikipedia.org/w/api.php?action=query&prop=revisions&rvsection=0&titles=%s&rvprop=content&format=xml" % title
@@ -47,7 +59,11 @@ class GrabArticle(object):
             return content
         except:
             return None
+
     def image(self, image, thumb=None):
+        """
+        removing image
+        """
         url = self.url_image % (image)
         result = self.__fetch(url)
         content = result.read()
@@ -57,7 +73,11 @@ class GrabArticle(object):
             url = url.replace('/' + self.lang + '/', '/' + self.lang + '/thumb/')
             return self.__fetch(url).read()
         return content
+    
 class Wiki2Plain(object):
+    """
+    Converting HTML to Plain Text
+    """
     def __init__(self, wiki):
         self.wiki = wiki
         self.text = wiki
@@ -68,7 +88,7 @@ class Wiki2Plain(object):
         return self.text
     def unwiki(self, wiki):
         """
-        Remove wiki markup from the text.
+        Remove wiki markup from the text. Hardcoded stuff.
         """
         wiki = re.sub(r'(?i)\{\{IPA(\-[^\|\{\}]+)*?\|([^\|\{\}]+)(\|[^\{\}]+)*?\}\}', lambda m: m.group(2), wiki)
         wiki = re.sub(r'(?i)\{\{Lang(\-[^\|\{\}]+)*?\|([^\|\{\}]+)(\|[^\{\}]+)*?\}\}', lambda m: m.group(2), wiki)
@@ -127,6 +147,9 @@ class Wiki2Plain(object):
             return '%s.%s' % match.groups()
         return None
 def getArticle(article):
+    """
+    Main Loop (Function) where other functions are called
+    """
     wiki=GrabArticle()
     raw=wiki.findArticle(article)
     wiki2plain=Wiki2Plain(raw)
@@ -137,14 +160,23 @@ def getArticle(article):
         else:
             return article
     except:
-        return None 
-def tts(text):
-      return os.system("espeak  -s 155 -a 200 "+text+" " )
-while(1):
+        return None
+    
+def tts(text):      # Text to speach
+    """
+    Using espeak module for outputting the answer through speakers.
+    """
+    return os.system("espeak  -s 155 -a 200 "+text+" " )
+    
+while(1):           # Infinite Loop {Main for calling all other functions}
     print "Welcome to PIIOTA Answering machine"
     print "1 . Talk to PIIOTA "
     print "2 . Exit"
-    a=input()
+    ai=raw_input("")
+    if len(ai)!=1:              #Added to check whether empty line inputted or not
+        break
+    else:
+        a=int(ai)           
     if a==2:
         print "Thank you"
         tts("Thank\ you")
@@ -158,12 +190,12 @@ while(1):
             if b[:2]=="w:":
                 article= b[2:]
                 new = 2     # open in a new tab, if possible
-                url = "http://en.wikipedia.org/wiki/"+article
-                webbrowser.open(url,new=new)
+                url = "http://en.wikipedia.org/wiki/"+article   # Added to make the new Url
+                webbrowser.open(url,new=new)    # Opening in browser
                 if __name__=="__main__":
-                      print getArticle(b[2:])
+                      print getArticle(b[2:])   # For getting summarized article
             else:
-                b=b.lower()
+                b=b.lower()                     # converting to lower case for removing differentiation between lower case and upper case
                 l=os.getcwd()+"/Data/"+b[0]+'.p' # Location of a file
                 try:
                    with open(l) as f: pass
