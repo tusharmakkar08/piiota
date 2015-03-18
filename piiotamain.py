@@ -191,7 +191,7 @@ while(1):           # Infinite Loop {Main for calling all other functions}
                 article= b[2:]
                 new = 2     # open in a new tab, if possible
                 url = "http://en.wikipedia.org/wiki/"+article   # Added to make the new Url
-                webbrowser.open(url,new=new)    # Opening in browser
+            ##    webbrowser.open(url,new=new)    # Opening in browser
                 if __name__=="__main__":
                       print getArticle(b[2:])   # For getting summarized article
             else:
