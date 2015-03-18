@@ -205,7 +205,7 @@ while(1):           # Infinite Loop {Main for calling all other functions}
                        k=foi[b].replace(" ","\ ")
                        tts(k)
                    else:
-                       f=open(l,'w+')
+                       f=open(l,'a')
                        print "Sorry .. Want to contribute by telling the appropriate answer"
                        print "1 . Contribute"
                        print "2 . Exit"
@@ -226,7 +226,8 @@ while(1):           # Infinite Loop {Main for calling all other functions}
                            pickle.dump(foi,open(l,"wb"))    # saving back in the file
                            print "Thank you"
                 except IOError as e:
-                    f=open(l,'w+')
+                    print l
+                    f=open(l,'w')
                     print "Sorry .. Want to contribute by telling the appropriate answer"
                     print "1 . Contribute"
                     print "2 . Exit"
