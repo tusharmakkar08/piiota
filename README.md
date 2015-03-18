@@ -1,5 +1,5 @@
 An Automated Answer telling machine / chat bot made using python .
-It speaks to you through your computer's speaker . 
+It speaks to you through your computer's speaker . You need to create `Data/` folder in the home repository of the folder for storing of data.
 
 Libraries used :
 ----------------
